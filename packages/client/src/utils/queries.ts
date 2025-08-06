@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { getToken } from "./user";
 import type { User } from "../Types/User";
@@ -48,5 +48,41 @@ export function useProducts() {
             const res = await axios.get("/products");
             return res.data as Product[];
         }
+    });
+}
+
+export function useAdminOverview() {
+    return useQuery({
+        queryKey: ["admin-overview"],
+        enabled: !!auth,
+        queryFn: async () => {
+            const res = await axios.get("/admin/overview");
+            return res.data as {
+                totalUsers: number;
+                totalServers: number;
+                totalLocations: number;
+            };
+        }
+    });
+}
+
+export function useUsers(query?: string) {
+    return useInfiniteQuery({
+        queryKey: ["users", query],
+        queryFn: async ({ pageParam = 0 }) => {
+            const res = await axios.get("/users", {
+                params: {
+                    limit: 10,
+                    offset: pageParam,
+                    ...(query ? { query } : {})
+                }
+            });
+            return res.data;
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.length < 10) return undefined;
+            return allPages.flat().length;
+        },
+        initialPageParam: 0,
     });
 }

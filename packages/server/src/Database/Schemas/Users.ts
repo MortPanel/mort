@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { int, mysqlTable, varchar, float, timestamp, boolean } from "drizzle-orm/mysql-core";
 
 export const usersTable = mysqlTable("users", {
@@ -11,7 +12,7 @@ export const usersTable = mysqlTable("users", {
     credits: float("credits").default(0).notNull(),
     serverLimit: int("server_limit").default(1).notNull(),
     pterodactylId: int("pterodactyl_id"),
-    emailVerifiedAt: timestamp("email_verified_at"),
+    emailVerified: boolean("email_verified").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow().onUpdateNow()
 });

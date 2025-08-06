@@ -111,6 +111,14 @@ export default function Servers() {
                                         {coinString(server?.product?.price || 0)} <code>/ hourly</code>
                                     </div>
                                 </div>
+                                <div className="flex w-full justify-between text-sm">
+                                    <div className="text-white/70">Next Billing:</div>
+                                    <div>
+                                        {server.nextBilling
+                                            ? new Date(server.nextBilling).toLocaleString()
+                                            : "N/A"}
+                                    </div>
+                                </div>
                             </div>
                             <div className="w-full gap-2 justify-center bg-[#232428] py-4 flex rounded-b-xl px-4 border-t border-[#292a2e] mt-4">
                                 <button

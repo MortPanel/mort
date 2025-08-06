@@ -109,6 +109,10 @@ export function findProducts(eggId?: number, nodeId?: number) {
     });
 }
 
+export function deleteProduct(id: number) {
+    return axios.delete(`/products/${id}`);
+}
+
 export function createServer(
     name:string,
     eggId: number,
@@ -158,4 +162,31 @@ export function editUsefulLink(
 
 export function deleteUsefulLink(id: number) {
     return axios.delete(`/useful-links/${id}`);
+}
+
+export function sync() {
+    return axios.post('/sync');
+}
+
+export function loginAsUser(userId: number) {
+    return axios.post('/admin/users/' + userId + '/login');
+}
+
+export function updateUser(
+    userId: number,
+    username: string,
+    email: string,
+    suspended: boolean,
+    serverLimit: number,
+    permissions: number,
+    emailVerified?: boolean
+) {
+    return axios.put(`/admin/users/${userId}`, {
+        username,
+        email,
+        suspended,
+        serverLimit,
+        permissions,
+        emailVerified
+    });
 }

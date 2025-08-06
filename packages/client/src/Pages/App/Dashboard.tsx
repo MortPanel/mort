@@ -35,7 +35,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {(c?.data?.usefulLinks)?.filter((link) => link.positions.includes("dashboard"))?.length && (
+            {(c?.data?.usefulLinks)?.filter((link) => link.positions.includes("dashboard"))?.length ? (
                 <div className="mt-8 max-w-2xl">
                     <div className="bg-[#23262F] p-6 rounded-lg">
                         <div className="flex items-center mb-6">
@@ -67,7 +67,7 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-            )}
+            ): null}
         </div>
     );
 }

@@ -173,9 +173,7 @@ router.delete('/products/:id', requireAuth, async (req, res) => {
 
     await db.delete(productsTable).where(eq(productsTable.id, parsedId));
 
-    return res.status(204).json({
-        success: true
-    });
+    return res.status(204).json();
 });
 
 export default router;

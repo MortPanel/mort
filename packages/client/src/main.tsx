@@ -6,6 +6,7 @@ import {
   QueryClientProvider
 } from "@tanstack/react-query";
 import { BrowserRouter } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 if (process.env.NODE_ENV === 'production') axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 else axios.defaults.baseURL = '/api'
@@ -30,6 +31,25 @@ createRoot(document.getElementById('root')!).render(
     })}>
       <BrowserRouter>
         <App />
+        <Toaster 
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              fontSize: '14px',
+              padding: '10px 15px',
+              borderRadius: '8px',
+              background: '#23272f',
+              color: '#fff'
+            },
+            success: {
+              duration: 3000,
+            },
+            error: {
+              duration: 5000,
+            }
+          }}
+        />
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode >,

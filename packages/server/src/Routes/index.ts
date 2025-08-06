@@ -6,9 +6,13 @@ import ConfigRouter from "./Config";
 import ProductRouter from "./Product";
 import ServerRouter from "./Server";
 import UsefulLinksRouter from "./UsefulLinks";
+import AdminRouter from "./Admin";
+import { usersTable } from '../Database';
+import { db } from '../Database/db';
+import { and, eq } from 'drizzle-orm';
 const app = express.Router();
 
-app.use((req, _res, next) => {
+app.use(async(req, _res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader && !authHeader?.startsWith('Bearer ')) return next();
 
@@ -16,6 +20,10 @@ app.use((req, _res, next) => {
     const user = verifyToken(token);
     if (!user) return next();
 
+    const isSuspended = await db.select().from(usersTable).where(
+        and(eq(usersTable.id, user.id), eq(usersTable.suspended, true))
+    );
+    if (isSuspended.length > 0) return next();
     req.user = user;
     next();
 });
@@ -27,5 +35,6 @@ app.use(ConfigRouter);
 app.use(ProductRouter);
 app.use(ServerRouter);
 app.use(UsefulLinksRouter);
+app.use(AdminRouter);
 
 export default app;

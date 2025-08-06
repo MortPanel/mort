@@ -9,6 +9,7 @@ export type Server = {
     eggId: number;
     locationId: number;
     productId: number;
+    nextBilling?: Date;
     createdAt: Date;
     updatedAt: Date;
 }

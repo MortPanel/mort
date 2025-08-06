@@ -9,8 +9,9 @@ import PencilIcon from "@/Components/Icons/Pencil";
 import TrashIcon from "@/Components/Icons/Trash";
 import CreateProductDialog from "@/Components/Dialogs/CreateProduct";
 import EditProductDialog from "@/Components/Dialogs/EditProduct";
-import { EditProduct } from "@/utils/apiRequests";
+import { deleteProduct, EditProduct } from "@/utils/apiRequests";
 import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 type SortKey = "name" | "price" | "memory" | "disk" | "cpu" | "swap" | "serverLimit" | "allocation" | "databases" | "backups" | "io" | "disabled";
 type SortOrder = "asc" | "desc";
@@ -184,7 +185,13 @@ export default function Products() {
                                                             <PencilIcon className="w-4 h-4"/>
                                                         </button>
                                                         </EditProductDialog>
-                                                        <button className="bg-[#23272f] border border-red-500 hover:bg-red-500 hover:text-white text-red-400 px-2 py-2 rounded-lg cursor-pointer transition-colors duration-150">
+                                                        <button 
+                                                        onClick={async () => {
+                                                            const pr = await deleteProduct(product.id);
+                                                            if (pr.status === 204) return window.location.reload();
+                                                            toast.error(pr.data?.message);
+                                                        }}
+                                                        className="bg-[#23272f] border border-red-500 hover:bg-red-500 hover:text-white text-red-400 px-2 py-2 rounded-lg cursor-pointer transition-colors duration-150">
                                                             <TrashIcon className="w-4 h-4"/>
                                                         </button>
                                                     </td>

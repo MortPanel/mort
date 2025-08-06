@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom"
-import { isAuthenticated } from "./utils/user"
+import { isAuthenticated, logout } from "./utils/user"
 import './index.css'
 import { useConfig, useUser } from "./utils/queries";
 import Loading from "./Pages/Loading";
@@ -13,13 +13,18 @@ import Servers from "./Pages/App/Servers";
 import Products from "./Pages/App/Admin/Product";
 import UsefulLinks from "./Pages/App/Admin/UsefulLinks";
 import Register from "./Pages/Account/Register";
+import AdminDashboard from "./Pages/App/Admin/Overview";
+import Users from "./Pages/App/Admin/Users";
 function App() {
   const config = useConfig();
-  useUser();
+  const user = useUser();
 
   if (config.isLoading) return <Loading />
   if (!config.data?.isSetupDone) return <SetupNotDone />
   if (!config.data?.rootUserExists) return <SetupRootUser />
+
+  if(!user.isLoading && !user.isError && !user?.data?.user && isAuthenticated()) logout();
+
   return (
     <Routes>
       {CreateRouter({
@@ -38,6 +43,18 @@ function App() {
         path: "/servers",
         authRequired: true,
         element: <Servers/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/admin/overview",
+        authRequired: true,
+        element: <AdminDashboard/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/admin/users",
+        authRequired: true,
+        element: <Users/>,
         addLayout: true
       })}
       {CreateRouter({

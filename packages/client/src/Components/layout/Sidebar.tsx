@@ -5,7 +5,7 @@ import ServerIcon from "../Icons/Server";
 import StoreIcon from "../Icons/Store";
 import { getPermissions } from "../../utils/permissions";
 import ProductIcon from "../Icons/Product";
-import { Link } from "lucide-react";
+import { Link, UserIcon } from "lucide-react";
 
 const menuItems = [
     { label: "Dashboard", url: "/", icon: <HomeIcon className="w-6 h-6" /> },
@@ -52,7 +52,7 @@ export default function Sidebar() {
                     </h1>
                     <div
                         onClick={() => nav("/admin/overview")}
-                        className={`flex items-center cursor-pointer hover:bg-[#282b33] transform duration-300 gap-3 px-6 py-3 w-full font-semibold relative ${isActive({ url: "/admin/sync" }) ? "bg-[#282b33] text-[#e9a745]" : ""}`}
+                        className={`flex items-center cursor-pointer hover:bg-[#282b33] transform duration-300 gap-3 px-6 py-3 w-full font-semibold relative ${isActive({ url: "/admin/overview" }) ? "bg-[#282b33] text-[#e9a745]" : ""}`}
                     >
                         <HomeIcon className="w-6 h-6" />
                         <div className="flex items-center gap-2">
@@ -66,6 +66,15 @@ export default function Sidebar() {
                         <ProductIcon className="w-6 h-6" />
                         <div className="flex items-center gap-2">
                             <span>Products</span>
+                        </div>
+                    </div>
+                    <div
+                        onClick={() => nav("/admin/users")}
+                        className={`flex items-center cursor-pointer hover:bg-[#282b33] transform duration-300 gap-3 px-6 py-3 w-full font-semibold relative ${isActive({ url: "/admin/users" }) ? "bg-[#282b33] text-[#e9a745]" : ""}`}
+                    >
+                        <UserIcon className="w-6 h-6" />
+                        <div className="flex items-center gap-2">
+                            <span>Users</span>
                         </div>
                     </div>
                 </>

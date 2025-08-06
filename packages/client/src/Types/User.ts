@@ -6,5 +6,9 @@ export type User = {
     suspended: boolean,
     permissions: number,
     credits: number, // cents
-    serverLimit: number
+    serverLimit: number,
+    servers?: number, 
+    emailVerified?: boolean,
+    createdAt?: string,
+    updatedAt?: string,
 }
