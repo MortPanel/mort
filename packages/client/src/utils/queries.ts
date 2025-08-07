@@ -8,6 +8,7 @@ import type { Nest } from "@/Types/Nest";
 import type { Node } from "@/Types/Node";
 import type { Product } from "@/Types/Product";
 import type { UsefulLink } from "@/Types/UsefulLink";
+import type { Ticket } from "@/Types/Ticket";
 
 const auth = getToken();
 if(auth) axios.defaults.headers.common["Authorization"] = `Bearer ${auth}`;
@@ -99,6 +100,59 @@ export function useServers(query?: string) {
                 }
             });
             return res.data as (Server & {user: User, product: Product})[];
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.length < 10) return undefined;
+            return allPages.flat().length;
+        },
+        initialPageParam: 0,
+    });
+}
+
+export function useTickets(query?: string) {
+    return useInfiniteQuery({
+        queryKey: ["tickets", query],
+        queryFn: async ({ pageParam = 0 }) => {
+            const res = await axios.get("/tickets", {
+                params: {
+                    limit: 10,
+                    offset: pageParam,
+                    ...(query ? { query } : {})
+                }
+            });
+            return res.data as Ticket[];
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.length < 10) return undefined;
+            return allPages.flat().length;
+        },
+        initialPageParam: 0,
+    });
+}
+
+export function useTicket(id: number) {
+    return useQuery({
+        queryKey: ["ticket", id],
+        queryFn: async () => {
+            const res = await axios.get(`/tickets/${id}`);
+            return res.data as Ticket;
+        },
+        enabled: !!id
+    });
+}
+
+export function useTicketsAdmin(query?: string) {
+    return useInfiniteQuery({
+        queryKey: ["admin-tickets", query],
+        queryFn: async ({ pageParam = 0 }) => {
+            const res = await axios.get("/admin/tickets", {
+                params: {
+                    limit: 10,
+                    offset: pageParam,
+                    ...(query ? { query } : {})
+                }
+            });
+            return res.data as Ticket[];
         },
         getNextPageParam: (lastPage, allPages) => {
             if (lastPage.length < 10) return undefined;

@@ -6,3 +6,4 @@ export * from "./Schemas/Nodes";
 export * from "./Schemas/Nests";
 export * from "./Schemas/Eggs";
 export * from "./Schemas/UsefulLinks";
+export * from "./Schemas/Tickets";

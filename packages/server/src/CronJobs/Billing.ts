@@ -14,11 +14,15 @@ export const billingCycleMap: Record<string, number> = {
 async function processBilling(server: any, product: any, nextBilling?: Date): Promise<boolean> {
     const [existingServer] = await db.select().from(serversTable).where(and(eq(serversTable.id, server.id), eq(serversTable.userId, server.userId), eq(serversTable.productId, server.productId))).limit(1);
     if (!existingServer) return false;
-
-    if(nextBilling&& existingServer.nextBilling != nextBilling) return false;
-    if(nextBilling && !isNaN(nextBilling.getTime())) return false; // for suspended servers by admin
+    const existingTime = existingServer.nextBilling ? new Date(existingServer.nextBilling).getTime() : null;
+    const nextTime = nextBilling ? nextBilling.getTime() : null;
+    if (nextBilling && existingTime !== nextTime) return false;
+    if(nextBilling && isNaN(nextBilling.getTime())) return false; // for suspended servers by admin
     const [user] = await db.select().from(usersTable).where(eq(usersTable.id, server.userId)).limit(1);
-    if (!user || user.credits < product.price) {
+    const between = Math.floor((new Date().getTime() - new Date(server.nextBilling!).getTime()) / 1000);
+    const cycles = Math.floor(between / billingCycleMap[product.billingCycle]) || 1;
+
+    if (!user || user.credits < (product.price * cycles)) {
         if(!existingServer.suspended) {
             await db.update(serversTable).set({ suspended: true }).where(eq(serversTable.id, server.id));
             await SuspendServer(server.id);
@@ -38,9 +42,6 @@ async function processBilling(server: any, product: any, nextBilling?: Date): Pr
         await db.update(serversTable).set({ suspended: false }).where(eq(serversTable.id, server.id));
         await UnsuspendServer(server.id);
     }
-
-    const between = Math.floor((new Date().getTime() - new Date(server.nextBilling!).getTime()) / 1000);
-    const cycles = Math.floor(between / billingCycleMap[product.billingCycle]);
 
     await db.update(usersTable).set({ credits: user.credits - (product.price * cycles) }).where(eq(usersTable.id, user.id));
 

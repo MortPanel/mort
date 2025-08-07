@@ -211,3 +211,37 @@ export function updateServer(
 export function deleteUser(userId: number) {
     return axios.delete(`/admin/users/${userId}`);
 }
+
+export function createTicket(
+    title: string,
+    message: string,
+    category: string,
+    priority: string,
+    serverId?: number
+) {
+    return axios.post('/tickets', {
+        title,
+        message,
+        category,
+        priority,
+        serverId
+    });
+}
+
+export function createTicketComment(
+    ticketId: number,
+    message: string
+) {
+    return axios.post(`/tickets/${ticketId}/comments`, {
+        message
+    });
+}
+
+export function changeTicketStatus(
+    ticketId: number,
+    status: 'open' | 'closed'
+) {
+    return axios.put(`/tickets/${ticketId}`, {
+        status
+    });
+}

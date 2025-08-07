@@ -16,6 +16,9 @@ import Register from "./Pages/Account/Register";
 import AdminDashboard from "./Pages/App/Admin/Overview";
 import Users from "./Pages/App/Admin/Users";
 import AdminServers from "./Pages/App/Admin/Servers";
+import Tickets from "./Pages/App/Tickets";
+import ViewTicket from "./Pages/App/ViewTicket";
+import AdminTickets from "./Pages/App/Admin/Tickets";
 function App() {
   const config = useConfig();
   const user = useUser();
@@ -44,6 +47,24 @@ function App() {
         path: "/servers",
         authRequired: true,
         element: <Servers/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/tickets",
+        authRequired: true,
+        element: <Tickets/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/tickets/:id",
+        authRequired: true,
+        element: <ViewTicket/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/admin/tickets",
+        authRequired: true,
+        element: <AdminTickets/>,
         addLayout: true
       })}
       {CreateRouter({
@@ -102,7 +123,7 @@ function CreateRouter({
           <Navbar />
           <div className="flex flex-1">
             <Sidebar />
-            <div className="flex-1 border-t-2 overflow-y-auto border-l-2 border-[#282b33] bg-[#121317] rounded-lg">
+            <div className="flex-1 max-h-[calc(100vh-5rem)] border-t-2 overflow-y-auto border-l-2 border-[#282b33] bg-[#121317] rounded-lg">
               {element}
             </div>
           </div>

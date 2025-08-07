@@ -4,4 +4,5 @@ export default new Map<string, BigInt>([
     ["users", BigInt(1 << 2)],
     ["usefulLinks", BigInt(1 << 3)],
     ["servers", BigInt(1 << 4)],
+    ["tickets", BigInt(1 << 5)],
 ]);
