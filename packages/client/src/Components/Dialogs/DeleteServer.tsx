@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
 import type { Server } from "@/Types/Server";
-import { deleteServer } from "@/utils/apiRequests";
+import { adminDeleteServer, deleteServer } from "@/utils/apiRequests";
 
 export default function DeleteServerDialog({
     children,
-    server
+    server,
+    admin = false
 }: {
     children: React.ReactNode,
-    server: Server
+    server: Server,
+    admin?: boolean
 }) {
     const [open, setOpen] = useState(false);
     const [serverName, setServerName] = useState("");
@@ -38,7 +40,9 @@ export default function DeleteServerDialog({
                 <button
                     disabled={serverName !== server.name}
                     onClick={async () => {
-                        const r = await deleteServer(server.id);
+                        let r;
+                        if(!admin) r = await deleteServer(server.id);
+                        else r = await adminDeleteServer(server.id);
                         if(r.status === 200) window.location.reload();
                     }}
                     className="w-full bg-red-500 text-black font-semibold cursor-pointer py-2 px-4 rounded-lg hover:bg-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed"

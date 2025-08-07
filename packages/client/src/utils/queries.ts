@@ -86,3 +86,24 @@ export function useUsers(query?: string) {
         initialPageParam: 0,
     });
 }
+
+export function useServers(query?: string) {
+    return useInfiniteQuery({
+        queryKey: ["servers", query],
+        queryFn: async ({ pageParam = 0 }) => {
+            const res = await axios.get("/servers", {
+                params: {
+                    limit: 10,
+                    offset: pageParam,
+                    ...(query ? { query } : {})
+                }
+            });
+            return res.data as (Server & {user: User, product: Product})[];
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.length < 10) return undefined;
+            return allPages.flat().length;
+        },
+        initialPageParam: 0,
+    });
+}

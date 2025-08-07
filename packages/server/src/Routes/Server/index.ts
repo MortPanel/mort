@@ -4,12 +4,60 @@ import BodyValidationMiddleware from '../../Helpers/Middlewares/Validation';
 import { productsTable, eggProductsTable, nodeProductsTable, eggsTable, serversTable, usersTable } from '../../Database';
 import { createServerSchema } from '../../Helpers/Validations/Server/Create';
 import { db } from '../../Database/db';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, like } from 'drizzle-orm';
 import CreateServer from '../../Helpers/Pterodactyl/Server/CreateServer';
 import { PterodactylErrorStyle } from '../../Helpers/Validations/Error';
 import GetNode from '../../Helpers/Pterodactyl/Nodes/GetNode';
 import { billingCycleMap, startBillingOfServer } from '../../CronJobs/Billing';
 const router = express.Router();
+
+router.get('/servers', requireAuth, async (req, res) => {
+    if (!(await permissions(req.user.id)).includes('servers')) return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to view servers'
+    });
+
+    const {limit, offset, query} = req.query;
+    const limitNumber = parseInt(limit as string) || 10;
+    const offsetNumber = parseInt(offset as string) || 0;
+    if (isNaN(limitNumber) || isNaN(offsetNumber)) return res.status(400).json({
+        success: false,
+        message: 'Invalid limit or offset'
+    });
+
+    if(limitNumber < 1 || offsetNumber < 0) return res.status(400).json({
+        success: false,
+        message: 'Invalid limit or offset'
+    });
+
+    if(limitNumber > 100) return res.status(400).json({
+        success: false,
+        message: 'maximum limit reached'
+    });
+
+    let servers = await db.select().from(serversTable).limit(limitNumber).offset(offsetNumber).where(
+        query ? like(serversTable.name, `%${query}%`) : undefined
+    );
+
+    for (const server of servers) {
+        const [user] = await db.select({
+            id: usersTable.id,
+            name: usersTable.name,
+            email: usersTable.email,
+            suspended: usersTable.suspended,
+            permissions: usersTable.permissions,
+            serverLimit: usersTable.serverLimit,
+            emailVerified: usersTable.emailVerified,
+        }).from(usersTable).where(eq(usersTable.id, server.userId)).limit(1);
+
+        (server as any).user = user;
+
+        const [product] = await db.select().from(productsTable).where(eq(productsTable.id, server.productId)).limit(1);
+        (server as any).product = product;
+    }
+
+    return res.status(200).json(servers);
+});
 
 router.post('/servers', requireAuth, (req, res, next) => BodyValidationMiddleware(req, res, next, createServerSchema), async (req, res) => {
     const { name, eggId, nodeId, productId } = req.body;
@@ -157,6 +205,7 @@ router.post('/servers', requireAuth, (req, res, next) => BodyValidationMiddlewar
 });
 
 import id from './id';
+import permissions from '../../Helpers/Permissions/get';
 
 router.use("/",id);
 

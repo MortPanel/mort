@@ -77,6 +77,15 @@ export default function Sidebar() {
                             <span>Users</span>
                         </div>
                     </div>
+                    <div
+                        onClick={() => nav("/admin/servers")}
+                        className={`flex items-center cursor-pointer hover:bg-[#282b33] transform duration-300 gap-3 px-6 py-3 w-full font-semibold relative ${isActive({ url: "/admin/servers" }) ? "bg-[#282b33] text-[#e9a745]" : ""}`}
+                    >
+                        <ServerIcon className="w-6 h-6" />
+                        <div className="flex items-center gap-2">
+                            <span>Servers</span>
+                        </div>
+                    </div>
                 </>
             )}
 

@@ -131,6 +131,10 @@ export function deleteServer(serverId: number) {
     return axios.delete(`/servers/${serverId}`);
 }
 
+export function adminDeleteServer(serverId: number) {
+    return axios.delete(`/admin/servers/${serverId}`);
+}
+
 export function createUsefulLink(
     title: string,
     url: string,
@@ -189,4 +193,21 @@ export function updateUser(
         permissions,
         emailVerified
     });
+}
+
+export function updateServer(
+    serverId: number,
+    name: string,
+    description: string,
+    suspended?: boolean
+) {
+    return axios.put(`/admin/servers/${serverId}`, {
+        name,
+        description,
+        suspended
+    });
+}
+
+export function deleteUser(userId: number) {
+    return axios.delete(`/admin/users/${userId}`);
 }

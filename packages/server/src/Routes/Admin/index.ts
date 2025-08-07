@@ -20,6 +20,8 @@ router.get('/admin/overview', requireAuth, async (req, res) => {
 });
 
 import users from './Users';
+import servers from './Servers';
 router.use('/admin/users', users);
+router.use('/admin/servers', servers);
 
 export default router;

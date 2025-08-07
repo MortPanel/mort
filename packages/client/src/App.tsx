@@ -15,6 +15,7 @@ import UsefulLinks from "./Pages/App/Admin/UsefulLinks";
 import Register from "./Pages/Account/Register";
 import AdminDashboard from "./Pages/App/Admin/Overview";
 import Users from "./Pages/App/Admin/Users";
+import AdminServers from "./Pages/App/Admin/Servers";
 function App() {
   const config = useConfig();
   const user = useUser();
@@ -55,6 +56,12 @@ function App() {
         path: "/admin/users",
         authRequired: true,
         element: <Users/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/admin/servers",
+        authRequired: true,
+        element: <AdminServers/>,
         addLayout: true
       })}
       {CreateRouter({

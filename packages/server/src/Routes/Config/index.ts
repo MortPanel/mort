@@ -56,12 +56,15 @@ router.get('/config', async (req, res) => {
 
 router.post('/sync', requireAuth, async (req, res) => {
     if (!(await permissions(req.user.id)).includes('*')) return res.status(403).json({ success: false, message: 'You do not have permission to sync' });
-
     const [
         nodes,
         nests,
         locations
     ] = [await GetNodes(), await GetNests(), await GetLocations()];
+
+    const locationIds = new Set((locations.data || []).map((l: any) => l.attributes.id));
+    const existingLocations = await db.select().from(locationsTable);
+    for (const loc of existingLocations) if (!locationIds.has(loc.id)) await db.delete(locationsTable).where(eq(locationsTable.id, loc.id));
 
     for (const l of locations.data || []) {
         await upsert(locationsTable, l.attributes.id, {
@@ -72,6 +75,10 @@ router.post('/sync', requireAuth, async (req, res) => {
         });
     }
 
+    const nestIds = new Set((nests.data || []).map((n: any) => n.attributes.id));
+    const existingNests = await db.select().from(nestsTable);
+    for (const nest of existingNests) if (!nestIds.has(nest.id)) await db.delete(nestsTable).where(eq(nestsTable.id, nest.id));
+    
     for (const n of nests.data || []) {
         await upsert(nestsTable, n.attributes.id, {
             name: n.attributes.name,
@@ -80,6 +87,11 @@ router.post('/sync', requireAuth, async (req, res) => {
             updatedAt: new Date(n.attributes.updated_at)
         });
         const eggs = await GetNestEggs(n.attributes.id);
+
+        const eggIds = new Set((eggs.data || []).map((e: any) => e.attributes.id));
+        const existingEggs = await db.select().from(eggsTable).where(eq(eggsTable.nestId, n.attributes.id));
+        for (const egg of existingEggs) if (!eggIds.has(egg.id)) await db.delete(eggsTable).where(eq(eggsTable.id, egg.id));
+
         for (const e of eggs.data || []) {
             const environment = (e.attributes.relationships?.variables?.data || []).map((variable: any) => ({
                 name: variable.attributes.name,
@@ -104,6 +116,9 @@ router.post('/sync', requireAuth, async (req, res) => {
         }
     }
 
+    const nodeIds = new Set((nodes.data || []).map((nd: any) => nd.attributes.id));
+    const existingNodes = await db.select().from(nodesTable);
+    for (const node of existingNodes) if (!nodeIds.has(node.id)) await db.delete(nodesTable).where(eq(nodesTable.id, node.id));
     for (const nd of nodes.data || []) {
         await upsert(nodesTable, nd.attributes.id, {
             locationId: nd.attributes.location_id,

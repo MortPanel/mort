@@ -1,42 +1,35 @@
-// todo: permissions
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog"
-import { updateUser } from "@/utils/apiRequests";
-import type { User } from "@/Types/User";
+import { updateServer } from "@/utils/apiRequests";
 import type { APIError } from "@/Types/APIError";
+import type { Server } from "@/Types/Server";
 
-export default function UpdateUserDialog({
+export default function UpdateServerDialog({
     children,
-    user
+    server
 }: {
     children: React.ReactNode,
-    user: User
+    server: Server
 }) {
     const [open, setOpen] = useState(false);
     const [errors, setErrors] = useState<Record<string, string> | null>(null);
     const [formData, setFormData] = useState({
-        username: user.name,
-        email: user.email,
-        suspended: user.suspended,
-        serverLimit: user.serverLimit,
-        permissions: user.permissions,
-        emailVerified: user.emailVerified || false, 
+        name: server.name,
+        description: server.description || "",
+        suspended: server.suspended
     });
 
     useEffect(() => {
         if (!open) return;
         setFormData({
-            username: user.name,
-            email: user.email,
-            suspended: user.suspended,
-            serverLimit: user.serverLimit,
-            permissions: user.permissions,
-            emailVerified: user.emailVerified || false, 
+            name: server.name,
+            description: server.description || "",
+            suspended: server.suspended
         })
-    }, [open, user]);
+    }, [open, server]);
 
     const up = async () => {
-        const u = await updateUser(user.id, formData.username, formData.email, formData.suspended, formData.serverLimit, formData.permissions);
+        const u = await updateServer(server.id, formData.name, formData.description, formData.suspended);
         if (u.status === 200) {
             window.location.reload();
             return;
@@ -53,28 +46,27 @@ export default function UpdateUserDialog({
             </DialogTrigger>
             <DialogContent className="min-w-xl bg-[#121316] text-white rounded-lg p-6 border-0">
                 <DialogTitle className="text-2xl font-bold mb-4">
-                    Update User
+                    Update Server
                 </DialogTitle>
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1">Username</label>
-                        {errors?.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                        <label className="block text-sm font-medium mb-1">Name</label>
+                        {errors?.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                         <input
                             type="text"
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             className="w-full px-3 py-2 rounded-lg bg-[#1e1f20] text-white border-2 border-[#35363a] focus:outline-none focus:border-[#e9a745] transition"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium mb-1">Email</label>
-                        {errors?.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                        <input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full px-3 py-2 rounded-lg bg-[#1e1f20] text-white border-2 border-[#35363a] focus:outline-none focus:border-[#e9a745] transition"
+                        <label className="block text-sm font-medium mb-1">Description</label>
+                        {errors?.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            className="w-full px-3 py-2 max-h-64 rounded-lg bg-[#1e1f20] text-white border border-[#35363a] focus:outline-none focus:border-[#e9a745] transition"
                         />
                     </div>
 
@@ -93,24 +85,13 @@ export default function UpdateUserDialog({
                             </div>
                         </div>
                     </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Server Limit</label>
-                        {errors?.serverLimit && <p className="text-red-500 text-sm mt-1">{errors.serverLimit}</p>}
-                        <input
-                            type="number"
-                            value={formData.serverLimit}
-                            onChange={(e) => setFormData({ ...formData, serverLimit: parseInt(e.target.value) })}
-                            className="w-full px-3 py-2 rounded-lg bg-[#1e1f20] text-white border-2 border-[#35363a] focus:outline-none focus:border-[#e9a745] transition"
-                        />
-                    </div>
                 </div>
                 <button
                     onClick={up}
-                    disabled={!formData.username || !formData.email || formData.serverLimit < 0}
+                    disabled={!formData.name}
                     className="w-full bg-[#e9a745] cursor-pointer text-black font-semibold disabled:hover:bg-[#e9a745] py-2 px-4 rounded-lg hover:bg-[#d8a63c] transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    Update User
+                    Update Server
                 </button>
             </DialogContent>
         </Dialog>
