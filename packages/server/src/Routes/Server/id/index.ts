@@ -1,6 +1,6 @@
 import express from 'express';
 import { requireAuth } from '../../../Helpers/Middlewares/Auth';
-import { serversTable } from '../../../Database';
+import { serversTable, ticketsTable } from '../../../Database';
 import { db } from '../../../Database/db';
 import { and, eq } from 'drizzle-orm';
 import DeleteServer from '../../../Helpers/Pterodactyl/Server/DeleteServer';
@@ -33,6 +33,10 @@ router.delete('/servers/:id', requireAuth, async (req, res) => {
         message: 'Failed to delete server from Pterodactyl',
         errors: PterodactylErrorStyle({ errors: deletereq.errors })
     });
+
+    await db.update(ticketsTable).set({
+        serverId: null
+    }).where(eq(ticketsTable.serverId, serverId));
 
     await db.delete(serversTable).where(
         and(

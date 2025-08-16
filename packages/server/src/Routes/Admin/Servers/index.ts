@@ -1,7 +1,7 @@
 import express from 'express';
 import { eq } from 'drizzle-orm';
 import { db } from '../../../Database/db';
-import { serversTable } from '../../../Database';
+import { serversTable, ticketsTable } from '../../../Database';
 import { requireAuth } from '../../../Helpers/Middlewares/Auth';
 import permissions from '../../../Helpers/Permissions/get';
 import BodyValidationMiddleware from '../../../Helpers/Middlewares/Validation';
@@ -39,9 +39,14 @@ router.delete('/:id', requireAuth, async (req, res) => {
         errors: PterodactylErrorStyle({ errors: deletereq.errors })
     });
 
+    await db.update(ticketsTable).set({
+        serverId: null
+    }).where(eq(ticketsTable.serverId, serverId));
+
+
     await db.delete(serversTable).where(eq(serversTable.id, serverId));
 
-    return res.status(200).json({success: true});
+    return res.status(200).json({ success: true });
 });
 
 router.put('/:id', requireAuth, (req, res, next) => BodyValidationMiddleware(req, res, next, adminUpdateServerSchema), async (req, res) => {
@@ -63,8 +68,8 @@ router.put('/:id', requireAuth, (req, res, next) => BodyValidationMiddleware(req
         errors: PterodactylErrorStyle({ errors: u.errors })
     });
 
-    if(!server.suspended && suspended) await SuspendServer(serverId);
-    if(server.suspended && !suspended) await UnsuspendServer(serverId);
+    if (!server.suspended && suspended) await SuspendServer(serverId);
+    if (server.suspended && !suspended) await UnsuspendServer(serverId);
 
     let updatedFields: Partial<typeof serversTable.$inferInsert> = {
         name: name?.trim(),
