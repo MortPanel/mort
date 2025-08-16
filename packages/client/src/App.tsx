@@ -19,6 +19,8 @@ import AdminServers from "./Pages/App/Admin/Servers";
 import Tickets from "./Pages/App/Tickets";
 import ViewTicket from "./Pages/App/ViewTicket";
 import AdminTickets from "./Pages/App/Admin/Tickets";
+import Shop from "./Pages/App/Shop";
+import Payment from "./Pages/App/Payment";
 function App() {
   const config = useConfig();
   const user = useUser();
@@ -47,6 +49,18 @@ function App() {
         path: "/servers",
         authRequired: true,
         element: <Servers/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/shop",
+        authRequired: true,
+        element: <Shop/>,
+        addLayout: true
+      })}
+      {CreateRouter({
+        path: "/admin/shop",
+        authRequired: true,
+        element: <Shop admin/>,
         addLayout: true
       })}
       {CreateRouter({
@@ -97,6 +111,12 @@ function App() {
         element: <UsefulLinks/>,
         addLayout: true
       })}
+      {CreateRouter({
+        path: "/payments/:state",
+        authRequired: false,
+        element: <Payment />,
+        addLayout: false
+      })}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )
@@ -123,8 +143,13 @@ function CreateRouter({
           <Navbar />
           <div className="flex flex-1">
             <Sidebar />
-            <div className="flex-1 max-h-[calc(100vh-5rem)] border-t-2 overflow-y-auto border-l-2 border-[#282b33] bg-[#121317] rounded-lg">
+            <div className="flex-1 max-h-[calc(100vh-5rem)] border-t-2 overflow-y-auto border-l-2 border-[#282b33] bg-[#121317] rounded-lg flex flex-col">
+              <div className="flex-1">
               {element}
+              </div>
+              <div className="text-xs text-gray-500 text-center py-2 bg-[#23262F]">
+                Powered by <a href="https://github.com/mortpanel/mort" className="text-[#e9a745] hover:underline">MortPanel</a>
+              </div>
             </div>
           </div>
         </div>

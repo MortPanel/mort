@@ -9,6 +9,7 @@ export type User = {
     serverLimit: number,
     servers?: number, 
     emailVerified?: boolean,
-    createdAt?: string,
-    updatedAt?: string,
+    avatar: string,
+    createdAt: Date,
+    updatedAt?: Date,
 }

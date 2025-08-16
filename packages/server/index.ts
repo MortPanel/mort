@@ -11,7 +11,8 @@ declare global {
 }
 
 import {startBilling} from "./src/CronJobs/Billing"
-startBilling()
+if(process.env.CRON_TIMEZONE) startBilling()
+else console.warn('[Server] CRON_TIMEZONE is not set, billing will not run automatically.');
 console.log('[Server] Starting...');
 
 app.use(express.json({ limit: '30mb' }));

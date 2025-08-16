@@ -22,8 +22,10 @@ router.get('/admin/overview', requireAuth, async (req, res) => {
 import users from './Users';
 import servers from './Servers';
 import tickets from './Tickets';
+import payments from './Payments';
 router.use('/admin/users', users);
 router.use('/admin/servers', servers);
 router.use('/admin/tickets', tickets);
+router.use('/admin/payments', payments);
 
 export default router;

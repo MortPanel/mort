@@ -245,3 +245,36 @@ export function changeTicketStatus(
         status
     });
 }
+
+export function createShopItem(
+    name: string,
+    description: string,
+    price: number,
+    quantity: number,
+    type: "credit" | "serverSlot",
+    currency: string,
+    disabled: boolean = false
+) {
+    return axios.post('/shop/items', {
+        name,
+        description,
+        price,
+        quantity,
+        type,
+        currency,
+        disabled
+    });
+}
+
+export function paymentCheckout(itemId: number, service:string,
+    sId: string
+) {
+    return axios.post(`/shop/items/${itemId}/checkout`, {
+        service,
+        sId
+    });
+}
+
+export function buyShopItem(itemId: number, service: string) {
+    return axios.post(`/shop/items/${itemId}/buy?service=${service}`);
+}

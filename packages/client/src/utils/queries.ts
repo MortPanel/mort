@@ -9,6 +9,9 @@ import type { Node } from "@/Types/Node";
 import type { Product } from "@/Types/Product";
 import type { UsefulLink } from "@/Types/UsefulLink";
 import type { Ticket } from "@/Types/Ticket";
+import type { PaymentServices } from "@/Types/PaymentServices";
+import type { ShopItem } from "@/Types/ShopItem";
+import type { Payment } from "@/Types/Payment";
 
 const auth = getToken();
 if(auth) axios.defaults.headers.common["Authorization"] = `Bearer ${auth}`;
@@ -25,6 +28,7 @@ export function useConfig() {
                 nests: Nest[];
                 nodes: Node[];
                 usefulLinks: UsefulLink[];
+                services: { name: PaymentServices; isProd: boolean }[];
             }
         }
     })
@@ -64,6 +68,26 @@ export function useAdminOverview() {
                 totalLocations: number;
             };
         }
+    });
+}
+
+export function usePayments(limit: number) {
+    return useInfiniteQuery({
+        queryKey: ["payments", limit],
+        queryFn: async ({ pageParam = 0 }) => {
+            const res = await axios.get("/admin/payments", {
+                params: {
+                    limit,
+                    offset: pageParam
+                }
+            });
+            return res.data as Payment[];
+        },
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage.length < limit) return undefined;
+            return allPages.flat().length;
+        },
+        initialPageParam: 0,
     });
 }
 
@@ -159,5 +183,15 @@ export function useTicketsAdmin(query?: string) {
             return allPages.flat().length;
         },
         initialPageParam: 0,
+    });
+}
+
+export function useShop() {
+    return useQuery<ShopItem[]>({
+        queryKey: ["shop-items"],
+        queryFn: async () => {
+            const res = await axios.get("/shop/items");
+            return res.data as ShopItem[];
+        },
     });
 }

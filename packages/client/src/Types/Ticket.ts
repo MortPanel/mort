@@ -13,7 +13,7 @@ export type Ticket = {
     server: Server;
     comments: TicketComment[];
     user: User & {avatar: string;}
-    createdAt: string;
+    createdAt: Date;
 }
 
 export type TicketComment = {

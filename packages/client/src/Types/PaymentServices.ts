@@ -1,0 +1,1 @@
+export type PaymentServices = "stripe"

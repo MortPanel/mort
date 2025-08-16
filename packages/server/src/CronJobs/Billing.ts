@@ -10,7 +10,7 @@ export const billingCycleMap: Record<string, number> = {
     weekly: 604800,
     monthly: 2592000
 };
-
+const timezone = process.env.CRON_TIMEZONE;
 async function processBilling(server: any, product: any, nextBilling?: Date): Promise<boolean> {
     const [existingServer] = await db.select().from(serversTable).where(and(eq(serversTable.id, server.id), eq(serversTable.userId, server.userId), eq(serversTable.productId, server.productId))).limit(1);
     if (!existingServer) return false;
@@ -57,7 +57,6 @@ async function processBilling(server: any, product: any, nextBilling?: Date): Pr
 export const startBilling = async () => {
     const allServers = await db.select().from(serversTable);
     const allProducts = await db.select().from(productsTable);
-    const timezone = process.env.CRON_TIMEZONE;
     const currentDate = new Date();
 
     for (const server of allServers) {

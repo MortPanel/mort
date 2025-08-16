@@ -8,6 +8,7 @@ import ServerRouter from "./Server";
 import UsefulLinksRouter from "./UsefulLinks";
 import AdminRouter from "./Admin";
 import TicketsRouter from "./Tickets";
+import ShopRouter from "./Shop";
 import { usersTable } from '../Database';
 import { db } from '../Database/db';
 import { and, eq } from 'drizzle-orm';
@@ -37,6 +38,7 @@ app.use(ProductRouter);
 app.use(ServerRouter);
 app.use(UsefulLinksRouter);
 app.use(AdminRouter);
-app.use(TicketsRouter)
+app.use(TicketsRouter);
+app.use(ShopRouter);
 
 export default app;

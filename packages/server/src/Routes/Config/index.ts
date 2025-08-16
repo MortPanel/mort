@@ -8,6 +8,7 @@ import GetNodes from '../../Helpers/Pterodactyl/Nodes/GetNodes';
 import GetLocations from '../../Helpers/Pterodactyl/Locations/GetLocations';
 import GetNests from '../../Helpers/Pterodactyl/Nests/GetNests';
 import GetNestEggs from '../../Helpers/Pterodactyl/Nests/Eggs/GetNestEggs';
+import GetServices from '../../Helpers/Payments/GetServices';
 const router = express.Router();
 
 router.get('/config', async (req, res) => {
@@ -51,6 +52,8 @@ router.get('/config', async (req, res) => {
         response.usefulLinks = await db.select().from(usefulLinksTable);
         for (const link of response.usefulLinks) link.positions = JSON.parse(link.positions);
     }
+    response.services = GetServices();
+
     return res.status(200).json(response);
 });
 

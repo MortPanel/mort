@@ -7,3 +7,5 @@ export * from "./Schemas/Nests";
 export * from "./Schemas/Eggs";
 export * from "./Schemas/UsefulLinks";
 export * from "./Schemas/Tickets";
+export * from "./Schemas/ShopProducts";
+export * from "./Schemas/Payments";

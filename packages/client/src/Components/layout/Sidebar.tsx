@@ -11,7 +11,7 @@ const menuItems = [
     { label: "Dashboard", url: "/", icon: <HomeIcon className="w-6 h-6" /> },
     { label: "Servers", url: "/servers", icon: <ServerIcon className="w-6 h-6" /> },
     { label: "Tickets", url: "/tickets", icon: <Ticket className="w-6 h-6" /> },
-    { label: "Store", url: "/store", icon: <StoreIcon className="w-6 h-6" /> },
+    { label: "Shop", url: "/shop", icon: <StoreIcon className="w-6 h-6" /> },
 ];
 
 export default function Sidebar() {
@@ -94,6 +94,15 @@ export default function Sidebar() {
                         <Ticket className="w-6 h-6" />
                         <div className="flex items-center gap-2">
                             <span>Tickets</span>
+                        </div>
+                    </div>
+                    <div
+                        onClick={() => nav("/admin/shop")}
+                        className={`flex items-center cursor-pointer hover:bg-[#282b33] transform duration-300 gap-3 px-6 py-3 w-full font-semibold relative ${isActive({ url: "/admin/shop" }) ? "bg-[#282b33] text-[#e9a745]" : ""}`}
+                    >
+                        <StoreIcon className="w-6 h-6" />
+                        <div className="flex items-center gap-2">
+                            <span>Shop</span>
                         </div>
                     </div>
                 </>
