@@ -67,6 +67,7 @@ router.post('/servers', requireAuth, (req, res, next) => BodyValidationMiddlewar
     );
     
     const user = await db.select({
+        pterodactylId: usersTable.pterodactylId,
         serverLimit: usersTable.serverLimit,
         credits: usersTable.credits
     }).from(usersTable).where(
@@ -147,7 +148,7 @@ router.post('/servers', requireAuth, (req, res, next) => BodyValidationMiddlewar
 
     const ptero = await CreateServer(
         name,
-        req.user.id,
+        user[0].pterodactylId!,
         egg[0].id,
         egg[0].dockerImage,
         egg[0].startup,

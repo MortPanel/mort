@@ -32,7 +32,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
         message: 'Server not found'
     });
 
-    const deletereq = await DeleteServer(findServer[0].id);
+    const deletereq = await DeleteServer(Number(findServer[0].pterodactylId));
     if (deletereq.errors) return res.status(500).json({
         success: false,
         message: 'Failed to delete server from Pterodactyl',
